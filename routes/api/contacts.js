@@ -1,24 +1,32 @@
-const express = require('express')
-const router = express.Router()
+const express = require("express");
+const router = express.Router();
 
-router.get('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+//  GET /api/contacts - getContactList
+router.get("/", (req, res) => {
+  res.json({  status: "success" });
+});
 
-router.get('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+// GET /api/contacts/:contactId - getContact
+router.get("/:contactId", (req, res) => {
+ 
+  res.json({  status: "success" });
+});
 
-router.post('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+// POST /api/contacts - addContact
+router.post("/", (req, res) => {
+  
+  res.json({ status: "success" });
+});
 
-router.delete('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+// DELETE /api/contacts/:contactId - deleteContact
+router.delete("/:contactId", (req, res) => {
+ 
+  res.json({ status: "success" });
+});
 
-router.patch('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+// PATCH /api/contacts/:contactId - change contact
+router.patch("/:contactId", (req, res) => {
+  res.json({ status: "success" });
+});
 
-module.exports = router
+module.exports = router;
