@@ -1,76 +1,53 @@
 const {
-  listContacts,
+  getContacts,
   getContactById,
-  removeContact,
   addContact,
   updateContact,
-} = require('../model/index.js');
+  deleteContact,
+} = require('../services/contactsService');
 
-const getContacts = async (req, res, next) => {
-  try {
-    const contacts = await listContacts();
-    res.status(200).json({ contacts, status: 'success' });
-  } catch (error) {
-    next(error);
-  }
+const getContactsController = async (req, res) => {
+  const contacts = await getContacts();
+  res.json({ contacts });
 };
 
-const getContactsById = async (req, res, next) => {
-  try {
-    const contact = await getContactById(req.params.contactId);
+const getContactsByIdController = async (req, res) => {
+  const { contactId } = req.params;
+  const contact = await getContactById(contactId);
 
-    if (!contact) {
-      return res.status(400).json({ message: 'Contact not found' });
-    }
-
-    res.status(200).json({ contact, status: 'success' });
-  } catch (error) {
-    next(error);
-  }
+  res.status(200).json({ contact, status: 'success' });
 };
 
-const addContacts = async (req, res, next) => {
-  try {
-    const contact = await addContact(req.body);
+const addContactController = async (req, res) => {
+  const contact = await addContact(req.body);
 
-    res.status(201).json({ contact, status: 'success' });
-  } catch (error) {
-    next(error);
-  }
+  res.status(201).json({ contact, status: 'success' });
 };
 
-const updateContacts = async (req, res, next) => {
-  try {
-    const contact = await updateContact(req.params.contactId, req.body);
 
-    if (!contact) {
-      return res.status(400).json({ message: 'Contact not found' });
-    }
-
-    res.status(200).json({ contact, status: 'success' });
-  } catch (error) {
-    next(error);
-  }
+const updateContactController = async (req, res) => {
+  const { contactId } = req.params;
+  const contact = await updateContact(contactId, req.body);
+  res.status(200).json({ contact, status: 'success' });
 };
 
-const deleteContact = async (req, res, next) => {
-  try {
-    const contactToDelete = await removeContact(req.params.contactId);
+const updateContactStatusController = async (req, res) => {
+  const { contactId } = req.params;
+  const contact = await updateContactStatusController(contactId, req.body);
+  res.status(200).json({ contact, status: 'success' });
+};
 
-    if (!contactToDelete) {
-      return res.status(400).json({ message: 'Contact not found' });
-    }
-
-    res.status(200).json({ status: 'Contact deleted' });
-  } catch (error) {
-    next(error);
-  }
+const deleteContactController = async (req, res) => {
+  const { contactId } = req.params;
+  await deleteContact(contactId);
+  res.status(200).json({ status: 'success' });
 };
 
 module.exports = {
-  getContacts,
-  getContactsById,
-  addContacts,
-  updateContacts,
-  deleteContact,
+  getContactsController,
+  getContactsByIdController,
+  addContactController,
+  updateContactController,
+  updateContactStatusController,
+  deleteContactController,
 };
