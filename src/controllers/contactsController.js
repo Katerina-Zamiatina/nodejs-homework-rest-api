@@ -3,6 +3,7 @@ const {
   getContactById,
   addContact,
   updateContact,
+  updateContactStatus,
   deleteContact,
 } = require('../services/contactsService');
 
@@ -24,7 +25,6 @@ const addContactController = async (req, res) => {
   res.status(201).json({ contact, status: 'success' });
 };
 
-
 const updateContactController = async (req, res) => {
   const { contactId } = req.params;
   const contact = await updateContact(contactId, req.body);
@@ -32,8 +32,7 @@ const updateContactController = async (req, res) => {
 };
 
 const updateContactStatusController = async (req, res) => {
-  const { contactId } = req.params;
-  const contact = await updateContactStatusController(contactId, req.body);
+  const contact = await updateContactStatus(req.params.contactId, req.body);
   res.status(200).json({ contact, status: 'success' });
 };
 

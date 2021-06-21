@@ -7,13 +7,13 @@ const connectMongo = async () => {
   const client = await mongoose.connect(urlDb, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
+    useFindAndModify: false,
   });
   return client;
 };
 
-
 mongoose.connection.on('connected', () => {
-    console.log('Mongoose connected');
+  console.log('Mongoose connected');
 });
 
 mongoose.connection.on('error', err => {
@@ -21,7 +21,7 @@ mongoose.connection.on('error', err => {
 });
 
 mongoose.connection.on('disconnected', () => {
-    console.log('Mongoose disconnected');
+  console.log('Mongoose disconnected');
 });
 
 process.on('SIGINT', () => {
