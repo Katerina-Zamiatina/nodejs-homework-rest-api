@@ -1,5 +1,7 @@
 const Joi = require('joi');
 
+const { ValidationError, WrongIdError } = require('../helpers/errors');
+
 const addContactSchema = Joi.object({
   name: Joi.string().alphanum().min(3).max(30).required(),
 
@@ -30,10 +32,14 @@ const updateContactSchema = Joi.object({
     .optional(),
 }).min(1);
 
+const updateContactStatusSchema = Joi.object({
+  favorite: Joi.boolean().required(),
+});
+
 const validate = (schema, req, res, next) => {
   const validationResult = schema.validate(req.body);
   if (validationResult.error) {
-    return res.status(400).json({ status: validationResult.error.details });
+    next(new ValidationError(validationResult.error.details));
   }
   next();
 };
@@ -45,5 +51,9 @@ module.exports = {
 
   updateContactValidation: (req, res, next) => {
     return validate(updateContactSchema, req, res, next);
+  },
+
+  updateContactStatusValidation: (req, res, next) => {
+    return validate(updateContactStatusSchema, req, res, next);
   },
 };
