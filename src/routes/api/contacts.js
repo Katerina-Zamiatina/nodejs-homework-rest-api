@@ -18,17 +18,26 @@ const {
   deleteContactController,
 } = require('../../controllers/contactsController.js');
 
-router.get('/', asyncWrapper(getContactsController));
-router.get('/:contactId', asyncWrapper(getContactsByIdController));
-router.post('/', addContactValidation, asyncWrapper(addContactController));
-router.delete('/:contactId', asyncWrapper(deleteContactController));
+const { guard } = require('../../helpers/guard');
+
+router.get('/', guard, asyncWrapper(getContactsController));
+router.get('/:contactId', guard, asyncWrapper(getContactsByIdController));
+router.post(
+  '/',
+  addContactValidation,
+  guard,
+  asyncWrapper(addContactController),
+);
+router.delete('/:contactId', guard, asyncWrapper(deleteContactController));
 router.patch(
   '/:contactId',
+  guard,
   updateContactValidation,
   asyncWrapper(updateContactController),
 );
 router.patch(
   '/:contactId/favorite',
+  guard,
   updateContactStatusValidation,
   asyncWrapper(updateContactStatusController),
 );
