@@ -50,7 +50,7 @@ web_modules/
 *.tgz
 
 # dotenv environment variables file
-.env
+**/.env
 .env.test
 .env.production
 
