@@ -1,23 +1,34 @@
 const User = require('../schemas/userModel');
 
-const findUserById = async userId => {
-  const user = await User.findById({ userId });
-  return user;
+const findUserById = userId => {
+  return User.findById(userId);
 };
 
-const findUserByEmail = async email => {
-  const user = await User.findOne({ email });
-  return user;
+const findUserByEmail = email => {
+  return User.findOne({ email });
 };
 
 const addUser = async body => {
-  const newUser = await new User(body);
+  const newUser = new User(body);
   await newUser.save();
   return newUser;
 };
 
-const updateUserToken = async (userId, token) => {
-  return await User.findByIdAndUpdate(userId, { token });
+const updateUserToken = (userId, token) => {
+  return User.findByIdAndUpdate(userId, { token });
+};
+
+const findUserByToken = token => {
+  return User.findOne({ token }).select('-password');
+};
+
+const updateUserSubscription = async (userId, subscription) => {
+  const user = await User.findOneAndUpdate(
+    { _id: userId },
+    { subscription },
+    { new: true },
+  );
+  return user;
 };
 
 module.exports = {
@@ -25,4 +36,6 @@ module.exports = {
   findUserByEmail,
   addUser,
   updateUserToken,
+  findUserByToken,
+  updateUserSubscription,
 };

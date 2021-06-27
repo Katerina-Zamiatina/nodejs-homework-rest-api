@@ -1,6 +1,19 @@
-const { findUserByEmail, addUser } = require('../services/userService');
+const {
+  findUserByEmail,
+  findUserById,
+  addUser,
+  updateUserSubscription,
+} = require('../services/userService');
 
 const { userLogin, userLogout } = require('../services/authService');
+
+const getCurrentUserController = async (req, res) => {
+  const currentUser = req.user;
+  if (currentUser) {
+    res.status(200).json({ currentUser, status: 'success' });
+  }
+  res.status(401).json({ message: 'Not authorized' });
+};
 
 const registerController = async (req, res) => {
   const { email, password, subscription } = req.body;
@@ -26,12 +39,26 @@ const loginController = async (req, res) => {
 };
 
 const logoutController = async (req, res) => {
-  await userLogout(userId);
-  res.status(200).json({ token, status: 'success' });
+  await userLogout(req.user.id);
+  res.status(204).json({ message: 'No content' });
+};
+
+const updateSubscriptionController = async (req, res) => {
+  const result = await updateUserSubscription(
+    req.user.id,
+    req.body.subscription,
+  );
+  if (result) {
+    const { email, subscription } = result;
+
+    res.status(200).json({ user: { email, subscription }, status: 'updated' });
+  }
 };
 
 module.exports = {
+  getCurrentUserController,
   registerController,
   loginController,
   logoutController,
+  updateSubscriptionController,
 };
