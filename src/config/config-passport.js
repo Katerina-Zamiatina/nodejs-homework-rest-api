@@ -1,7 +1,6 @@
 const passport = require('passport');
 const { Strategy, ExtractJwt } = require('passport-jwt');
-const User = require('../schemas/userModel');
-const { findUserById } = require('../services/userService');
+const { findUserById, findUserByToken } = require('../services/userService');
 require('dotenv').config();
 SECRET_KEY = process.env.JWT_SECRET_KEY;
 
@@ -10,22 +9,16 @@ const params = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 };
 
-// passport.serializeUser((user, done) => {
-//   done(null, user.id);
-// });
-
-// passport.deserializeUser((id, done) => {
-//   User.findById(id, (err, user) => {
-//     done(err, user);
-//   });
-// });
-
 passport.use(
   new Strategy(params, async (payload, done) => {
+
+    console.log('params', params.jwtFromRequest());
+  
     try {
       const user = await findUserById(payload.id);
+
       if (!user) return done(new Error('User not found'));
-      if (!user.token) return done(null, false);
+      if (!user.token) return done(new Error('Not authorized'));
       return done(null, user);
     } catch (error) {
       done(error);
