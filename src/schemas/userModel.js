@@ -9,6 +9,7 @@ const userSchema = new Schema({
     required: [true, 'E-mail is required'],
     unique: true,
   },
+  avatarUrl: String,
   password: {
     type: String,
     required: [true, 'Password is required'],

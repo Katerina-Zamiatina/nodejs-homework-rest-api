@@ -20,5 +20,6 @@ router.post('/registration', userValidation, asyncWrapper(registerController));
 router.post('/login', userValidation, asyncWrapper(loginController));
 router.post('/logout', guard, asyncWrapper(logoutController));
 router.patch('/', guard, asyncWrapper(updateSubscriptionController));
+router.patch('/avatars', guard, asyncWrapper())
 
 module.exports = router;
