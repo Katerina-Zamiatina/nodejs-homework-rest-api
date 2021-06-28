@@ -5,7 +5,7 @@ const {
   addContactValidation,
   updateContactValidation,
   updateContactStatusValidation,
-} = require('../../middlewares/validation.js');
+} = require('../../middlewares/contactValidation.js');
 
 const { asyncWrapper } = require('../../helpers/apiHelpers');
 
@@ -17,6 +17,10 @@ const {
   updateContactStatusController,
   deleteContactController,
 } = require('../../controllers/contactsController.js');
+
+const { guard } = require('../../helpers/guard');
+
+router.use(guard);
 
 router.get('/', asyncWrapper(getContactsController));
 router.get('/:contactId', asyncWrapper(getContactsByIdController));

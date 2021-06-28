@@ -1,13 +1,14 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const urlDb = process.env.URL_DB;
+const urlDb = process.env.DB_HOST;
 
 const connectMongo = async () => {
   const client = await mongoose.connect(urlDb, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
     useFindAndModify: false,
+    useCreateIndex: true,
   });
   return client;
 };

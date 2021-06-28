@@ -1,44 +1,53 @@
-const { Contact } = require('../schemas/contactsModel');
+const Contact = require('../schemas/contactsModel');
 const { WrongIdError } = require('../helpers/errors');
 
-const getContacts = async () => {
-  const contacts = await Contact.find({});
+const getContacts = async (userId, { page = 0, perPage = 5 }) => {
+  const contacts = await Contact.find({ owner: userId })
+    .populate({
+      path: 'owner',
+      select: 'email subscription',
+    })
+    .limit(+perPage)
+    .skip(+page * +perPage);
   return contacts;
 };
 
-const getContactById = async contactId => {
-  const contact = await Contact.findById(contactId);
+const getContactById = async (userId, contactId) => {
+  const contact = await Contact.findOne({ _id: contactId, owner: userId });
 
   if (!contact) {
-    throw new WrongIdError(`fail, no contacts with id ${contactId}`);
+    throw new WrongIdError(`Fail, no contacts with id ${contactId}`);
   }
   return contact;
 };
 
-const addContact = async ({ name, email, phone, favorite }) => {
-  const newContact = await Contact.create({ name, email, phone, favorite });
+const addContact = async (userId, body) => {
+  const newContact = await Contact.create({ ...body, owner: userId });
   return newContact;
 };
 
-
-const updateContact = async (contactId, body) => {
-  const contact = await Contact.findByIdAndUpdate(contactId, body, {
-    new: true,
-  });
+const updateContact = async (userId, contactId, body) => {
+  const contact = await Contact.findByIdAndUpdate(
+    { _id: contactId, owner: userId },
+    body,
+    {
+      new: true,
+    },
+  );
   return contact;
 };
 
-const updateContactStatus = async (contactId, { favorite }) => {
+const updateContactStatus = async (userId, contactId, { favorite }) => {
   const contact = await Contact.findByIdAndUpdate(
-    contactId,
+    { _id: contactId, owner: userId },
     { favorite },
     { new: true },
   );
   return contact;
 };
 
-const deleteContact = async contactId => {
-  await Contact.findByIdAndRemove(contactId);
+const deleteContact = async (userId, contactId) => {
+  await Contact.findByIdAndRemove({ _id: contactId, owner: userId });
 };
 
 module.exports = {
