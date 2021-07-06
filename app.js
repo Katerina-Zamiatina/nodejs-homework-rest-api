@@ -1,13 +1,15 @@
 const express = require('express');
-const multer = require('multer');
 
-const logger = require('morgan');
 const cors = require('cors');
+
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
+const logger = require('morgan');
+
+require('dotenv').config();
+
 const app = express();
-const upload = multer({ dest: '/public/avatars' });
 
 const usersRouter = require('./src/routes/api/users');
 const contactsRouter = require('./src/routes/api/contacts');
@@ -16,8 +18,6 @@ const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
 });
-
-
 
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
 
@@ -31,6 +31,7 @@ app.use(express.json({ limit: 10000 }));
 app.use('/api/', apiLimiter);
 app.use('/api/users', usersRouter);
 app.use('/api/contacts', contactsRouter);
+
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Not found' });
