@@ -3,11 +3,19 @@ const bcrypt = require('bcryptjs');
 
 const { Schema } = mongoose;
 
+const garavatar = require('gravatar');
+
 const userSchema = new Schema({
   email: {
     type: String,
     required: [true, 'E-mail is required'],
     unique: true,
+  },
+  avatarUrl: {
+    type: String,
+    default: function () {
+      return garavatar.url(this.email, { s: '250' }, true);
+    },
   },
   password: {
     type: String,

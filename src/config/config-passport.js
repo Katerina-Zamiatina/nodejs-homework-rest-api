@@ -11,8 +11,6 @@ const params = {
 
 passport.use(
   new Strategy(params, async (payload, done) => {
-
-    console.log('params', params.jwtFromRequest());
   
     try {
       const user = await findUserById(payload.id);

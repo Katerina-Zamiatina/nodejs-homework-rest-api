@@ -9,8 +9,6 @@ const {
 
 const getContactsController = async (req, res) => {
   const { page, perPage } = req.query;
-  console.log('page', page);
-  console.log('perpage', perPage);
 
   const contacts = await getContacts(req.user.id, { page, perPage });
 
