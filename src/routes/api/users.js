@@ -18,6 +18,7 @@ const {
 
 const { guard } = require('../../helpers/guard');
 
+// router.get('/verify/:verificationToken', asyncwrapper());
 router.get('/current', guard, asyncWrapper(getCurrentUserController));
 router.post('/registration', userValidation, asyncWrapper(registerController));
 router.post('/login', userValidation, asyncWrapper(loginController));

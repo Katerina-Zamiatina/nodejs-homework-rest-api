@@ -19,7 +19,7 @@ const guard = async (req, res, next) => {
 
     if (userDb.id === user.id) {
       req.token = token;
-      req.user = userDb;
+      req.user = userDb; 
       return next();
     }
     next(new NotAuthorizedError('Invalid token'));
