@@ -1,33 +1,13 @@
 const fs = require('fs').promises;
 const path = require('path');
 
-// using Twilio SendGrid's v3 Node.js Library
-// https://github.com/sendgrid/sendgrid-nodejs
-// javascript
-// const sgMail = require('@sendgrid/mail')
-// sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-// const msg = {
-//   to: 'test@example.com', // Change to your recipient
-//   from: 'test@example.com', // Change to your verified sender
-//   subject: 'Sending with SendGrid is Fun',
-//   text: 'and easy to do anywhere, even with Node.js',
-//   html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-// }
-// sgMail
-//   .send(msg)
-//   .then(() => {
-//     console.log('Email sent')
-//   })
-//   .catch((error) => {
-//     console.error(error)
-//   })
-
 const {
   findUserByEmail,
   findUserById,
-  addUser,
+  createUser,
   updateUserSubscription,
   updateAvatar,
+  verifyUser,
 } = require('../services/userService');
 
 const { userLogin, userLogout } = require('../services/authService');
@@ -40,6 +20,8 @@ const AVATAR_DIR = path.join(
   process.env.PUBLIC_DIR,
   process.env.AVATAR_DIR,
 );
+
+const verifyController = async (req, res) => {};
 
 const updateAvatarController = async (req, res) => {
   const filePath = req.file.path;
@@ -54,7 +36,7 @@ const updateAvatarController = async (req, res) => {
 
     const url = await updateAvatar(req.user.id, newAvatarUrl);
 
-    res.status(200).json({ avatarUrl: url, status: 'success'});
+    res.status(200).json({ avatarUrl: url, status: 'success' });
   }
   res
     .status(400)
@@ -75,7 +57,7 @@ const registerController = async (req, res) => {
   if (user) {
     res.status(409).json({ message: 'E-mail is already in use' });
   }
-  const newUser = await addUser({ email, password, subscription, avatarUrl });
+  const newUser = await createUser({ email, password, subscription, avatarUrl });
   res.status(201).json({
     user: {
       email: newUser.email,
@@ -120,4 +102,5 @@ module.exports = {
   logoutController,
   updateSubscriptionController,
   updateAvatarController,
+  verifyController,
 };
