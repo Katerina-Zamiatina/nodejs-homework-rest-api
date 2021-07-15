@@ -41,7 +41,8 @@ const sendMail = async (verifyToken, email) => {
   const emailBody = createTemplate(verifyToken, email);
 
   const transporter = nodemailer.createTransport({
-    host: 'gmail',
+    host: 'smtp.ethereal.email',
+    port: 587,
     auth: {
       user: SENDER_MAIL,
       pass: MAIL_PASS,
@@ -57,7 +58,7 @@ const sendMail = async (verifyToken, email) => {
   try {
     await transporter.sendMail(options);
   } catch (error) {
-    throw new Error(`Something went wrong: ${error.message}`);
+    throw new Error(`Something went wrong: ${error.response}`);
   }
 };
 
@@ -74,7 +75,7 @@ module.exports = {
 //     theme: 'default',
 //     product: {
 //       name: 'PhoneBook',
-//       link: 'http://',
+//       link: 'http://localhost:3001',
 //     },
 //   });
 
@@ -87,7 +88,7 @@ module.exports = {
 //         button: {
 //           color: '#22BC66',
 //           text: 'Confirm your account',
-//           link: `https://localhost:3030/api/users/verify/${verifyToken}`,
+//           link: `https://localhost:3001/api/users/verify/${verifyToken}`,
 //         },
 //       },
 //       outro:
@@ -113,4 +114,8 @@ module.exports = {
 //   };
 
 //   await sgMail.send(msg);
+// };
+
+// module.exports = {
+//   sendMail,
 // };

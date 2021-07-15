@@ -7,13 +7,17 @@ const { updateUserToken, findUserByEmail } = require('./userService');
 
 const userLogin = async ({ email, password }) => {
   const user = await findUserByEmail(email);
-  if (!user ||  !await user.validPassword(password)) {
+
+  if (!user || !(await user.validPassword(password)) || !user.verify) {
     return null;
   }
+
   const id = user.id;
   const payload = { id };
   const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '1h' });
+
   await updateUserToken(id, token);
+
   return token;
 };
 

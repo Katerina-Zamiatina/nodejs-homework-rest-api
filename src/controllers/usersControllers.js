@@ -3,11 +3,11 @@ const path = require('path');
 
 const {
   findUserByEmail,
-  findUserById,
   createUser,
   updateUserSubscription,
   updateAvatar,
   verifyUser,
+  reVerifyUser,
 } = require('../services/userService');
 
 const { userLogin, userLogout } = require('../services/authService');
@@ -21,7 +21,25 @@ const AVATAR_DIR = path.join(
   process.env.AVATAR_DIR,
 );
 
-const verifyController = async (req, res) => {};
+const verifyUserController = async (req, res) => {
+  const result = await verifyUser(req.params.verifyToken);
+
+  if (result) {
+    return res.status(200).json({ message: 'Verification successfull' });
+  }
+  res
+    .status(400)
+    .json({ message: 'Verification token is invalid. Please, contact us' });
+};
+
+const reVerifyUserController = async (req, res) => {
+  const result = await reVerifyUser(req.body.email);
+
+  if (result) {
+    return res.status(200).json({ message: 'Verification email sent' });
+  }
+  res.status(400).json({ message: 'Verification has already been passed' });
+};
 
 const updateAvatarController = async (req, res) => {
   const filePath = req.file.path;
@@ -53,11 +71,20 @@ const getCurrentUserController = async (req, res) => {
 
 const registerController = async (req, res) => {
   const { email, password, subscription, avatarUrl } = req.body;
+
   const user = await findUserByEmail(email);
+
   if (user) {
     res.status(409).json({ message: 'E-mail is already in use' });
   }
-  const newUser = await createUser({ email, password, subscription, avatarUrl });
+
+  const newUser = await createUser({
+    email,
+    password,
+    subscription,
+    avatarUrl,
+  });
+
   res.status(201).json({
     user: {
       email: newUser.email,
@@ -72,7 +99,11 @@ const loginController = async (req, res) => {
   const { email, password, avatarUrl, subscription } = req.body;
   const token = await userLogin({ email, password });
   if (token) {
-    res.status(200).json({ token, user: { email, avatarUrl, subscription } });
+    res.status(200).json({
+      token,
+      user: { email, avatarUrl, subscription },
+      status: 'success',
+    });
   }
 
   res.status(401).json({ message: 'E-mail or password is not valid' });
@@ -102,5 +133,6 @@ module.exports = {
   logoutController,
   updateSubscriptionController,
   updateAvatarController,
-  verifyController,
+  verifyUserController,
+  reVerifyUserController,
 };

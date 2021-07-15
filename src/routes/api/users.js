@@ -14,12 +14,15 @@ const {
   logoutController,
   updateSubscriptionController,
   updateAvatarController,
+  verifyUserController,
+  reVerifyUserController,
 } = require('../../controllers/usersControllers.js');
 
 const { guard } = require('../../helpers/guard');
 
-// router.get('/verify/:verificationToken', asyncwrapper());
 router.get('/current', guard, asyncWrapper(getCurrentUserController));
+router.get('/verify/:verifyToken', asyncWrapper(verifyUserController));
+router.post('/verify', asyncWrapper(reVerifyUserController));
 router.post('/registration', userValidation, asyncWrapper(registerController));
 router.post('/login', userValidation, asyncWrapper(loginController));
 router.post('/logout', guard, asyncWrapper(logoutController));
