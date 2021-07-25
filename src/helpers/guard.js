@@ -8,18 +8,18 @@ const guard = async (req, res, next) => {
   try {
     const auth = req.headers['authorization'];
 
-    const [, token] = auth.split(' ');
+    const [, token] = auth?.split(' ') ?? [];
 
     if (!token) {
       next(new NotAuthorizedError('Please, provide token'));
     }
+
     const userDb = await findUserByToken(token);
     const user = jwt.verify(token, process.env.JWT_SECRET_KEY);
-  
 
     if (userDb.id === user.id) {
       req.token = token;
-      req.user = userDb; 
+      req.user = userDb;
       return next();
     }
     next(new NotAuthorizedError('Invalid token'));
